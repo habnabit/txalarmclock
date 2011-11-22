@@ -1,5 +1,5 @@
 #!/usr/bin/osascript
-# -*- coding: mac-roman -*-
+--*- coding: mac-roman -*-
 
 set minVolume to 15
 set maxVolume to 40
