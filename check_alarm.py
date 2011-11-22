@@ -97,16 +97,13 @@ def parse(path, dtstart=None):
     return AlarmCollection(parsed, dtstart)
 
 def main(alarms, timepiece, alarm):
-    try:
-        dtstart = os.path.getmtime(timepiece)
-    except OSError:
-        dtstart = None
-    else:
-        dtstart = datetime.datetime.fromtimestamp(dtstart)
-    collection = parse(open(alarms), dtstart)
+    fromtimestamp = datetime.datetime.fromtimestamp
+    dtstart = fromtimestamp(os.path.getmtime(timepiece))
     os.utime(timepiece, None)
+    now = fromtimestamp(os.path.getmtime(timepiece))
+    collection = parse(open(alarms), dtstart)
     next_action = next(iter(collection[alarm]))
-    if next_action.when > datetime.datetime.now():
+    if not dtstart < next_action.when <= now:
         return
     action_type = next_action.what.pop('type')
     actions[action_type](**next_action.what)
