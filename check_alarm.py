@@ -5,6 +5,9 @@ import datetime
 import yaml
 import os
 
+def parse_timedelta(obj):
+    return datetime.timedelta(**obj).total_seconds()
+
 actions = {}
 def action(kind):
     def deco(f):
@@ -15,6 +18,19 @@ def action(kind):
 @action("command")
 def action_command(args):
     subprocess.check_call(args)
+
+@action("iTunes")
+def action_iTunes(**args):
+    subprocess.check_call([
+        os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            'iTunes-alarm.applescript'),
+        str(args['min-volume']),
+        str(args['max-volume']),
+        str(parse_timedelta(args['volume-interval'])),
+        str(parse_timedelta(args['snooze'])),
+        str(args['snooze-restore-volume']),
+        args['playlist']])
 
 Action = collections.namedtuple('Action', 'what when')
 
