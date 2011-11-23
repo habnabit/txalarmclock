@@ -94,6 +94,14 @@ class Alarm(object):
                 action = s.transform(action)
             yield action
 
+    def first_between(self, start, end):
+        for action in self:
+            if action.when > end:
+                return None
+            if action.when < start:
+                continue
+            return action
+
 class AlarmCollection(object):
     def __init__(self, alarms, dtstart):
         self.alarm_source = alarms
@@ -118,8 +126,9 @@ def main(alarms, timepiece, alarm):
     os.utime(timepiece, None)
     now = fromtimestamp(os.path.getmtime(timepiece))
     collection = parse(open(alarms), dtstart)
-    next_action = next(iter(collection[alarm]))
-    if not dtstart < next_action.when <= now:
+    next_action = collection[alarm].first_between(dtstart, now)
+    print next_action
+    if next_action is None or not dtstart < next_action.when <= now:
         return
     action_type = next_action.what.pop('type')
     actions[action_type](**next_action.what)
@@ -127,4 +136,3 @@ def main(alarms, timepiece, alarm):
 if __name__ == '__main__':
     import sys
     main(*sys.argv[1:])
-
