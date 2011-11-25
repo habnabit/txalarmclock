@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css">
+    <style type="text/css">
+      #button {
+          position: absolute;
+          left: 25%; right: 25%; top: 40%; bottom: 40%;
+          font-size: 1.2em;
+      }
+    </style>
+
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="apple-touch-icon" href="/static/iphone.png">
+    <title>Snoozery</title>
+  </head>
+  <body>
+    <form action="/snooze/do" method="POST">
+      <input id="button" class="btn success" type="submit" name="submit" value="Snooze">
+    </form>
+  </body>
+</html>

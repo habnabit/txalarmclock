@@ -24,7 +24,8 @@ def parse_rrule(obj, base=None):
     return ret
 
 class Alarm(object):
-    def __init__(self, collection, obj):
+    def __init__(self, name, collection, obj):
+        self.name = name
         self.superseders = []
         self.cancelers = []
         if 'supersedes' in obj:
@@ -87,7 +88,8 @@ class AlarmCollection(object):
     def __getitem__(self, alarm):
         ret = self.alarms.get(alarm)
         if ret is None:
-            ret = self.alarms[alarm] = Alarm(self, self.alarm_source[alarm])
+            ret = self.alarms[alarm] = Alarm(
+                alarm, self, self.alarm_source[alarm])
         return ret
 
 def parse(path, dtstart=None):
