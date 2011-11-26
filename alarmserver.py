@@ -28,6 +28,10 @@ class AlarmService(service.Service):
         for act in self._alarmIterator:
             if act.when > now:
                 break
+        else:
+            log.msg('%r alarm has no future occurrences' % (self.alarm.name,))
+            self._task = None
+            return
         delta = act.when - now
         log.msg(
             'scheduling %r alarm for %s (%s)' % (
@@ -43,8 +47,9 @@ class AlarmService(service.Service):
         self._reschedule()
 
     def stopService(self):
-        if self.running:
+        if self.running and self._task is not None:
             self._task.cancel()
+            self._task = None
         service.Service.stopService(self)
 
     def replaceAlarm(self, alarm):
