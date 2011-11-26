@@ -46,6 +46,7 @@ def alarmDispatch(alarm, action):
 container.attachEnabled(alarmDispatch)
 
 def reloadAlarms(sig, frame):
+    log.msg('SIGHUP; reloading config')
     def _actuallyReloadAlarms():
         container.detachAll()
         container.replaceCollection(alarmparse.parse(open(CONFIG)))
