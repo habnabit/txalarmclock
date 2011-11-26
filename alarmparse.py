@@ -78,11 +78,12 @@ class Alarm(object):
             return action
 
 class AlarmCollection(object):
-    def __init__(self, alarms, dtstart):
-        self.alarm_source = alarms
+    def __init__(self, content, dtstart):
+        self.alarm_source = content['alarms']
+        self.enabled = set(content['enabled'])
         self.dtstart = dtstart
         self.alarms = {}
-        for k in alarms:
+        for k in self.alarm_source:
             self[k]
 
     def __getitem__(self, alarm):
@@ -93,5 +94,5 @@ class AlarmCollection(object):
         return ret
 
 def parse(path, dtstart=None):
-    parsed = yaml.safe_load(path)['alarms']
-    return AlarmCollection(parsed, dtstart)
+    content = yaml.safe_load(path)
+    return AlarmCollection(content, dtstart)

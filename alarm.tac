@@ -43,11 +43,13 @@ def alarmDispatch(alarm, action):
     action = action.what.copy()
     action_type = action.pop('type')
     actions[action_type](**action)
-container.attachAlarm('default', alarmDispatch)
+container.attachEnabled(alarmDispatch)
 
 def reloadAlarms(sig, frame):
     def _actuallyReloadAlarms():
+        container.detachAll()
         container.replaceCollection(alarmparse.parse(open(CONFIG)))
+        container.attachEnabled(alarmDispatch)
     reactor.callLater(0, _actuallyReloadAlarms)
 signal.signal(signal.SIGHUP, reloadAlarms)
 

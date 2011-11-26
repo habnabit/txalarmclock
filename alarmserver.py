@@ -60,23 +60,27 @@ class AlarmCollectionContainer(object):
         self.serviceParent = serviceParent
         self.alarmServices = {}
 
-    def attachAlarm(self, alarm, callable, alsoStart=False):
+    def attachAlarm(self, alarm, callable):
         service = self.alarmServices.get(alarm)
         if service is not None:
             raise ValueError('alarm %r already attached' % (alarm,))
         service = self.alarmServices[alarm] = (
             AlarmService(self.collection[alarm], callable))
-        if alsoStart:
-            service.startService()
         service.setServiceParent(self.serviceParent)
 
-    def detachAlarm(self, alarm, alsoStop=False):
-        service = self.alarmServices.get(alarm)
+    def attachEnabled(self, callable):
+        for alarm in self.collection.enabled:
+            self.attachAlarm(alarm, callable)
+
+    def detachAlarm(self, alarm):
+        service = self.alarmServices.pop(alarm, None)
         if service is None:
             raise ValueError('alarm %r not attached' % (alarm,))
         service.disownServiceParent()
-        if alsoStop:
-            service.stopService()
+
+    def detachAll(self):
+        for alarm in list(self.alarmServices):
+            self.detachAlarm(alarm)
 
     def replaceCollection(self, collection):
         self.collection = collection
