@@ -17,11 +17,11 @@ def action(kind):
 
 @action("command")
 def action_command(args):
-    check_call(args).addErrback(log.err)
+    alarmserver.check_call(args).addErrback(log.err)
 
 @action("iTunes")
 def action_iTunes(**args):
-    check_call([
+    alarmserver.check_call([
         os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
             'iTunes-alarm.applescript'),
